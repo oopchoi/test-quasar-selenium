@@ -17,7 +17,9 @@ const run = async () => {
   let chromeServer = appRootDir + '\\node_modules\\.bin\\chromedriver.cmd';
   console.log(chromeServer);
 
-  let bat = spawn(chromeServer, []);
+  let bat = spawn(chromeServer, [
+
+  ]);
   // let bat = spawn("C:\\Users\\boneis\\workspace\\test-quasar-selenium\\node_modules\\.bin\\chromedriver.cmd", []);
 
   // let bat = spawn("cmd.exe", [
@@ -40,21 +42,20 @@ const run = async () => {
   });
 
   const webdriver = require('selenium-webdriver')
-  const {By} = require('selenium-webdriver')
+  const {By, Capabilities} = require('selenium-webdriver')
 
   console.log('app path')
   console.log(require('electron').app.getAppPath())
 
+  let chromeCapabilities = webdriver.Capabilities.chrome();
+  let chromeOptions = { 'args': ['--headless'] };
+  chromeCapabilities.set('chromeOptions', chromeOptions);
+  chromeCapabilities.setPageLoadStrategy('normal')
+
   const driver = await new webdriver.Builder()
     // 작동하고 있는 크롬 드라이버의 포트 "9515"를 사용합니다.
     .usingServer('http://localhost:9515')
-    .withCapabilities({
-      'goog:chromeOptions': {
-        args: [ "--headless" ],
-        // 여기에 사용중인 Electron 바이너리의 경로를 지정하세요.
-        binary: appRootDir + '\\node_modules\\electron\\dist\\electron.exe'
-      }
-    })
+    .withCapabilities(chromeCapabilities)
     .forBrowser('chrome')
     .build()
 
